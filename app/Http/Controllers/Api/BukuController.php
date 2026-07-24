@@ -32,7 +32,7 @@ class BukuController extends Controller
         }
 
         $perPage = $request->integer('per_page', 10);
-        $bukus = $query->orderBy('judul')->paginate($perPage);
+        $bukus = $query->orderBy('id', 'asc')->paginate($perPage);
 
         return response()->json([
             'success' => true,

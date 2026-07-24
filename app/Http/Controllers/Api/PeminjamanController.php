@@ -27,7 +27,21 @@ class PeminjamanController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $statusFilter = $request->status;
+            if ($statusFilter === 'terlambat') {
+                $query->where(function ($q) {
+                    $q->where('status', 'terlambat')
+                      ->orWhere(function ($sub) {
+                          $sub->where('status', 'dipinjam')
+                              ->where('tanggal_kembali_rencana', '<', now()->toDateString());
+                      });
+                });
+            } elseif ($statusFilter === 'dipinjam') {
+                $query->where('status', 'dipinjam')
+                      ->where('tanggal_kembali_rencana', '>=', now()->toDateString());
+            } else {
+                $query->where('status', $statusFilter);
+            }
         }
 
         $perPage = $request->integer('per_page', 10);
@@ -63,9 +77,17 @@ class PeminjamanController extends Controller
 
             $buku->decrement('stok');
 
+            $status = 'dipinjam';
+            if (isset($data['tanggal_kembali_rencana'])) {
+                $tglRencana = \Carbon\Carbon::parse($data['tanggal_kembali_rencana'])->startOfDay();
+                if ($tglRencana->lt(now()->startOfDay())) {
+                    $status = 'terlambat';
+                }
+            }
+
             $peminjaman = Peminjaman::create([
                 ...$data,
-                'status' => 'dipinjam',
+                'status' => $status,
             ]);
             $peminjaman->load('buku');
 

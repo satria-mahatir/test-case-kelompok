@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('buku_id')->constrained('bukus')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('nama_peminjam', 150)->nullable();
-            $table->string('nis', 30)->nullable();
+            $table->bigInteger('nis')->nullable();
             $table->date('tanggal_pinjam');
             $table->date('tanggal_kembali_rencana');
             $table->date('tanggal_pengembalian')->nullable();

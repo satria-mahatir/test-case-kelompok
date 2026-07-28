@@ -99,13 +99,13 @@ class PerpustakaanSeeder extends Seeder
             ]);
         }
 
-        // 5. Transaksi Peminjaman Sampel (Terhubung dengan akun peminjam)
+        // 5. Transaksi Peminjaman Sampel (Terhubung dengan akun peminjam dan NIS Integer)
         $peminjamanSamples = [
             [
                 'buku_id' => 1,
                 'user_id' => $createdUsers['peminjam1']->id,
                 'nama_peminjam' => 'Ahmad Rizky',
-                'nis' => 'peminjam1',
+                'nis' => 1001,
                 'tanggal_pinjam' => now()->subDays(5)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->addDays(2)->format('Y-m-d'),
                 'status' => 'dipinjam',
@@ -114,7 +114,7 @@ class PerpustakaanSeeder extends Seeder
                 'buku_id' => 2,
                 'user_id' => $createdUsers['peminjam2']->id,
                 'nama_peminjam' => 'Dewi Lestari',
-                'nis' => 'peminjam2',
+                'nis' => 1002,
                 'tanggal_pinjam' => now()->subDays(10)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(3)->format('Y-m-d'),
                 'tanggal_pengembalian' => now()->subDays(2)->format('Y-m-d'),
@@ -124,7 +124,7 @@ class PerpustakaanSeeder extends Seeder
                 'buku_id' => 3,
                 'user_id' => $createdUsers['peminjam1']->id,
                 'nama_peminjam' => 'Ahmad Rizky',
-                'nis' => 'peminjam1',
+                'nis' => 1001,
                 'tanggal_pinjam' => now()->subDays(12)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(5)->format('Y-m-d'),
                 'status' => 'terlambat',
@@ -133,7 +133,7 @@ class PerpustakaanSeeder extends Seeder
                 'buku_id' => 4,
                 'user_id' => $createdUsers['peminjam2']->id,
                 'nama_peminjam' => 'Dewi Lestari',
-                'nis' => 'peminjam2',
+                'nis' => 1002,
                 'tanggal_pinjam' => now()->subDays(2)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->addDays(5)->format('Y-m-d'),
                 'status' => 'dipinjam',
@@ -142,7 +142,7 @@ class PerpustakaanSeeder extends Seeder
                 'buku_id' => 5,
                 'user_id' => $createdUsers['peminjam1']->id,
                 'nama_peminjam' => 'Ahmad Rizky',
-                'nis' => 'peminjam1',
+                'nis' => 1001,
                 'tanggal_pinjam' => now()->subDays(15)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(8)->format('Y-m-d'),
                 'tanggal_pengembalian' => now()->subDays(7)->format('Y-m-d'),
@@ -152,7 +152,7 @@ class PerpustakaanSeeder extends Seeder
                 'buku_id' => 6,
                 'user_id' => $createdUsers['peminjam2']->id,
                 'nama_peminjam' => 'Dewi Lestari',
-                'nis' => 'peminjam2',
+                'nis' => 1002,
                 'tanggal_pinjam' => now()->subDays(14)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(7)->format('Y-m-d'),
                 'status' => 'terlambat',

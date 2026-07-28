@@ -56,14 +56,16 @@
             <table class="table table-custom">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Peminjam</th>
-                        <th>Buku</th>
-                        <th>Tgl Pinjam</th>
-                        <th>Tgl Rencana Kembali</th>
-                        <th>Tgl Dikembalikan</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th width="40">#</th>
+                        <th>NAMA PEMINJAM</th>
+                        <th>NIS (INT)</th>
+                        <th>AKUN USERNAME</th>
+                        <th>BUKU</th>
+                        <th>TGL PINJAM</th>
+                        <th>TGL RENCANA KEMBALI</th>
+                        <th>TGL DIKEMBALIKAN</th>
+                        <th>STATUS</th>
+                        <th width="90">AKSI</th>
                     </tr>
                 </thead>
                 <tbody id="peminjamanTbody">
@@ -90,7 +92,7 @@
                         <select class="form-select-custom" id="user_id" name="user_id">
                             <option value="">-- Pilih Akun Peminjam (Opsional) --</option>
                         </select>
-                        <small class="text-muted" style="font-size:0.75rem;">Pilih akun terdaftar atau isi nama & NIS manual di bawah.</small>
+                        <small class="text-muted" style="font-size:0.75rem;">Pilih akun terdaftar atau isi Nama & NIS manual di bawah.</small>
                     </div>
 
                     <div class="mb-3">
@@ -101,11 +103,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label-custom" for="nama_peminjam">Nama Peminjam <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control-custom" id="nama_peminjam" name="nama_peminjam" required>
+                        <input type="text" class="form-control-custom" id="nama_peminjam" name="nama_peminjam" placeholder="Masukkan nama peminjam" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label-custom" for="nis">NIS / Username <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control-custom" id="nis" name="nis" required>
+                        <label class="form-label-custom" for="nis">NIS (Nomor Induk Siswa - Angka / Int) <span class="text-danger">*</span></label>
+                        <input type="number" step="1" class="form-control-custom" id="nis" name="nis" placeholder="Contoh: 1001, 1002" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label-custom" for="tanggal_pinjam">Tanggal Pinjam <span class="text-danger">*</span></label>
@@ -193,7 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedId = this.value;
         if (selectedId && usersMap[selectedId]) {
             document.getElementById('nama_peminjam').value = usersMap[selectedId].name;
-            document.getElementById('nis').value = usersMap[selectedId].username;
+            // set NIS default numeric if available, or generate from user id
+            document.getElementById('nis').value = 1000 + parseInt(usersMap[selectedId].id);
         }
     });
 
@@ -213,13 +216,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadData() {
-        showTableLoading('peminjamanTbody', 8);
+        showTableLoading('peminjamanTbody', 10);
         try {
             const res = await Api.get(`/peminjaman?page=${currentPage}&search=${encodeURIComponent(currentSearch)}&status=${encodeURIComponent(currentStatus)}`);
             if (res.success) {
                 tbody.innerHTML = '';
                 if (res.data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">Tidak ada data peminjaman</div></td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">Tidak ada data peminjaman</div></td></tr>`;
                     paginationContainer.innerHTML = '';
                     return;
                 }
@@ -233,17 +236,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     aksiHtml += `<button class="btn-sm-action text-danger" onclick="hapusPeminjaman(${item.id})" title="Hapus"><i class="bi bi-trash"></i></button>`;
 
                     const tglKembali = item.tanggal_pengembalian ? item.tanggal_pengembalian : '-';
-                    const userBadge = item.user 
-                        ? `<span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 ms-1 px-1 py-0.5" style="font-size:0.68rem;">@${item.user.username}</span>` 
-                        : '';
+                    
+                    const userAccountCell = item.user 
+                        ? `<div><code class="text-accent" style="font-size:0.85rem;">@${item.user.username}</code></div><span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 px-1 py-0.5" style="font-size:0.68rem;">${item.user.role.toUpperCase()}</span>` 
+                        : `<span class="text-muted" style="font-size:0.8rem;"><i>- Tanpa Akun -</i></span>`;
+
+                    const nisValue = item.nis !== null && item.nis !== undefined ? item.nis : '-';
 
                     tbody.innerHTML += `
                         <tr>
                             <td>${startIndex + index}</td>
-                            <td>
-                                <div class="fw-bold">${item.nama_peminjam} ${userBadge}</div>
-                                <small class="text-muted">${item.nis}</small>
-                            </td>
+                            <td class="fw-semibold text-white">${item.nama_peminjam}</td>
+                            <td><span class="badge bg-secondary bg-opacity-20 text-light border border-secondary border-opacity-30 px-2 py-1" style="font-family: monospace; font-size:0.85rem;">${nisValue}</span></td>
+                            <td>${userAccountCell}</td>
                             <td>${item.buku ? item.buku.judul : '-'}</td>
                             <td>${item.tanggal_pinjam}</td>
                             <td>${item.tanggal_kembali_rencana}</td>
@@ -284,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 buku_id: document.getElementById('buku_id').value,
                 user_id: document.getElementById('user_id').value || null,
                 nama_peminjam: document.getElementById('nama_peminjam').value,
-                nis: document.getElementById('nis').value,
+                nis: parseInt(document.getElementById('nis').value, 10),
                 tanggal_pinjam: document.getElementById('tanggal_pinjam').value,
                 tanggal_kembali_rencana: document.getElementById('tanggal_kembali_rencana').value,
             };

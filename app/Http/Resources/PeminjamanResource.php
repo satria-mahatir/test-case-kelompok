@@ -17,7 +17,7 @@ class PeminjamanResource extends JsonResource
         }
 
         $namaPeminjam = $this->nama_peminjam ?? $this->user?->name ?? 'Peminjam';
-        $nis = $this->nis ?? $this->user?->username ?? '-';
+        $nis = $this->nis !== null ? (int)$this->nis : null;
 
         return [
             'id' => $this->id,

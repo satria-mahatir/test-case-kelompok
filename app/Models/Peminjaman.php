@@ -24,6 +24,7 @@ class Peminjaman extends Model
     ];
 
     protected $casts = [
+        'nis' => 'integer',
         'tanggal_pinjam' => 'date',
         'tanggal_kembali_rencana' => 'date',
         'tanggal_pengembalian' => 'date',

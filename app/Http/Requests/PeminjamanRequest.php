@@ -17,8 +17,9 @@ class PeminjamanRequest extends FormRequest
     {
         return [
             'buku_id' => 'required|integer|exists:bukus,id',
-            'nama_peminjam' => 'required|string|max:150',
-            'nis' => 'required|string|max:30',
+            'user_id' => 'nullable|integer|exists:users,id',
+            'nama_peminjam' => 'nullable|string|max:150',
+            'nis' => 'nullable|string|max:30',
             'tanggal_pinjam' => 'required|date',
             'tanggal_kembali_rencana' => 'required|date|after_or_equal:tanggal_pinjam',
         ];

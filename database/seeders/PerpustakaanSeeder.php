@@ -43,8 +43,9 @@ class PerpustakaanSeeder extends Seeder
             ],
         ];
 
+        $createdUsers = [];
         foreach ($users as $u) {
-            User::create($u);
+            $createdUsers[$u['username']] = User::create($u);
         }
 
         // 1. Kategori (5)
@@ -98,20 +99,22 @@ class PerpustakaanSeeder extends Seeder
             ]);
         }
 
-        // 5. Transaksi Peminjaman Sampel (8 Peminjaman)
+        // 5. Transaksi Peminjaman Sampel (Terhubung dengan akun peminjam)
         $peminjamanSamples = [
             [
                 'buku_id' => 1,
+                'user_id' => $createdUsers['peminjam1']->id,
                 'nama_peminjam' => 'Ahmad Rizky',
-                'nis' => '1001',
+                'nis' => 'peminjam1',
                 'tanggal_pinjam' => now()->subDays(5)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->addDays(2)->format('Y-m-d'),
                 'status' => 'dipinjam',
             ],
             [
                 'buku_id' => 2,
+                'user_id' => $createdUsers['peminjam2']->id,
                 'nama_peminjam' => 'Dewi Lestari',
-                'nis' => '1002',
+                'nis' => 'peminjam2',
                 'tanggal_pinjam' => now()->subDays(10)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(3)->format('Y-m-d'),
                 'tanggal_pengembalian' => now()->subDays(2)->format('Y-m-d'),
@@ -119,24 +122,27 @@ class PerpustakaanSeeder extends Seeder
             ],
             [
                 'buku_id' => 3,
-                'nama_peminjam' => 'Fajar Nugraha',
-                'nis' => '1003',
+                'user_id' => $createdUsers['peminjam1']->id,
+                'nama_peminjam' => 'Ahmad Rizky',
+                'nis' => 'peminjam1',
                 'tanggal_pinjam' => now()->subDays(12)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(5)->format('Y-m-d'),
                 'status' => 'terlambat',
             ],
             [
                 'buku_id' => 4,
-                'nama_peminjam' => 'Siti Nurhaliza',
-                'nis' => '1004',
+                'user_id' => $createdUsers['peminjam2']->id,
+                'nama_peminjam' => 'Dewi Lestari',
+                'nis' => 'peminjam2',
                 'tanggal_pinjam' => now()->subDays(2)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->addDays(5)->format('Y-m-d'),
                 'status' => 'dipinjam',
             ],
             [
                 'buku_id' => 5,
-                'nama_peminjam' => 'Rahmat Hidayat',
-                'nis' => '1005',
+                'user_id' => $createdUsers['peminjam1']->id,
+                'nama_peminjam' => 'Ahmad Rizky',
+                'nis' => 'peminjam1',
                 'tanggal_pinjam' => now()->subDays(15)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(8)->format('Y-m-d'),
                 'tanggal_pengembalian' => now()->subDays(7)->format('Y-m-d'),
@@ -144,26 +150,11 @@ class PerpustakaanSeeder extends Seeder
             ],
             [
                 'buku_id' => 6,
-                'nama_peminjam' => 'Maya Indah',
-                'nis' => '1006',
+                'user_id' => $createdUsers['peminjam2']->id,
+                'nama_peminjam' => 'Dewi Lestari',
+                'nis' => 'peminjam2',
                 'tanggal_pinjam' => now()->subDays(14)->format('Y-m-d'),
                 'tanggal_kembali_rencana' => now()->subDays(7)->format('Y-m-d'),
-                'status' => 'terlambat',
-            ],
-            [
-                'buku_id' => 7,
-                'nama_peminjam' => 'Bayu Pratama',
-                'nis' => '1007',
-                'tanggal_pinjam' => now()->subDays(1)->format('Y-m-d'),
-                'tanggal_kembali_rencana' => now()->addDays(6)->format('Y-m-d'),
-                'status' => 'dipinjam',
-            ],
-            [
-                'buku_id' => 8,
-                'nama_peminjam' => 'Rina Gunawan',
-                'nis' => '1008',
-                'tanggal_pinjam' => now()->subDays(8)->format('Y-m-d'),
-                'tanggal_kembali_rencana' => now()->subDays(1)->format('Y-m-d'),
                 'status' => 'terlambat',
             ],
         ];

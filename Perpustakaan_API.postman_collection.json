@@ -936,6 +936,11 @@
                                     "key": "page",
                                     "value": "1",
                                     "description": "Nomor halaman"
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "3",
+                                    "description": "Filter peminjaman berdasarkan ID akun peminjam"
                                 }
                             ]
                         },

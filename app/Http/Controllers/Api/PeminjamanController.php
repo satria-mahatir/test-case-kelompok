@@ -7,22 +7,31 @@ use App\Http\Requests\PeminjamanRequest;
 use App\Http\Resources\PeminjamanResource;
 use App\Models\Buku;
 use App\Models\Peminjaman;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
-    // GET /api/peminjaman?search=&status=&per_page=
+    // GET /api/peminjaman?search=&status=&user_id=&per_page=
     public function index(Request $request): JsonResponse
     {
-        $query = Peminjaman::with('buku');
+        $query = Peminjaman::with(['buku.kategori', 'buku.penulis', 'buku.penerbit', 'user']);
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
 
         if ($request->filled('search')) {
             $keyword = $request->search;
             $query->where(function ($q) use ($keyword) {
                 $q->where('nama_peminjam', 'like', "%{$keyword}%")
-                  ->orWhere('nis', 'like', "%{$keyword}%");
+                  ->orWhere('nis', 'like', "%{$keyword}%")
+                  ->orWhereHas('user', function ($u) use ($keyword) {
+                      $u->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('username', 'like', "%{$keyword}%");
+                  });
             });
         }
 
@@ -75,6 +84,19 @@ class PeminjamanController extends Controller
                 ], 422);
             }
 
+            // Auto-populate nama_peminjam & nis jika user_id diberikan
+            if (!empty($data['user_id'])) {
+                $user = User::find($data['user_id']);
+                if ($user) {
+                    if (empty($data['nama_peminjam'])) {
+                        $data['nama_peminjam'] = $user->name;
+                    }
+                    if (empty($data['nis'])) {
+                        $data['nis'] = $user->username;
+                    }
+                }
+            }
+
             $buku->decrement('stok');
 
             $status = 'dipinjam';
@@ -89,7 +111,7 @@ class PeminjamanController extends Controller
                 ...$data,
                 'status' => $status,
             ]);
-            $peminjaman->load('buku');
+            $peminjaman->load(['buku.kategori', 'buku.penulis', 'buku.penerbit', 'user']);
 
             return response()->json([
                 'success' => true,
@@ -101,7 +123,7 @@ class PeminjamanController extends Controller
 
     public function show(Peminjaman $peminjaman): JsonResponse
     {
-        $peminjaman->load('buku');
+        $peminjaman->load(['buku.kategori', 'buku.penulis', 'buku.penerbit', 'user']);
 
         return response()->json([
             'success' => true,
@@ -126,7 +148,7 @@ class PeminjamanController extends Controller
             ]);
 
             $peminjaman->buku()->increment('stok');
-            $peminjaman->load('buku');
+            $peminjaman->load(['buku.kategori', 'buku.penulis', 'buku.penerbit', 'user']);
 
             return response()->json([
                 'success' => true,

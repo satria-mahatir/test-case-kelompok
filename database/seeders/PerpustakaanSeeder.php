@@ -7,12 +7,40 @@ use App\Models\Kategori;
 use App\Models\Penerbit;
 use App\Models\Penulis;
 use App\Models\Peminjaman;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class PerpustakaanSeeder extends Seeder
 {
     public function run(): void
     {
+        // 0. Akun Pengguna / User (Tanpa Gmail - Username & Password)
+        $users = [
+            [
+                'name' => 'Satria Mahatir (Administrator)',
+                'username' => 'admin',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+            ],
+            [
+                'name' => 'Budi Santoso (Petugas 1)',
+                'username' => 'petugas1',
+                'password' => Hash::make('password123'),
+                'role' => 'petugas',
+            ],
+            [
+                'name' => 'Siti Rahmawati (Petugas 2)',
+                'username' => 'petugas2',
+                'password' => Hash::make('password123'),
+                'role' => 'petugas',
+            ],
+        ];
+
+        foreach ($users as $u) {
+            User::create($u);
+        }
+
         // 1. Kategori (5)
         $kategoris = ['Fiksi', 'Non-Fiksi', 'Sains', 'Sejarah', 'Teknologi'];
         $katIds = [];
@@ -58,91 +86,84 @@ class PerpustakaanSeeder extends Seeder
                 'kategori_id' => $katIds[array_rand($katIds)],
                 'penulis_id' => $penIds[array_rand($penIds)],
                 'penerbit_id' => $penrIds[array_rand($penrIds)],
-                'isbn' => '978-0' . str_pad($i, 2, '0', STR_PAD_LEFT),
-                'tahun_terbit' => rand(2000, 2024),
-                'stok' => rand(2, 10),
-                'deskripsi' => 'Ini adalah deskripsi dummy untuk buku contoh ke-' . $i,
+                'tahun_terbit' => rand(2015, 2024),
+                'isbn' => sprintf('978-%03d', $i),
+                'stok' => rand(1, 10),
             ]);
         }
 
-        // 5. Peminjaman (8 Sampel Transaksi)
-        $sampleLoans = [
+        // 5. Transaksi Peminjaman Sampel (8 Peminjaman)
+        $peminjamanSamples = [
             [
                 'buku_id' => 1,
-                'nama_peminjam' => 'Budi Santoso',
-                'nis' => '2026001',
-                'tanggal_pinjam' => now()->subDays(3)->toDateString(),
-                'tanggal_kembali_rencana' => now()->addDays(4)->toDateString(),
-                'tanggal_pengembalian' => null,
+                'nama_peminjam' => 'Ahmad Rizky',
+                'nis' => '1001',
+                'tanggal_pinjam' => now()->subDays(5)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->addDays(2)->format('Y-m-d'),
                 'status' => 'dipinjam',
             ],
             [
                 'buku_id' => 2,
-                'nama_peminjam' => 'Siti Rahma',
-                'nis' => '2026002',
-                'tanggal_pinjam' => now()->subDays(10)->toDateString(),
-                'tanggal_kembali_rencana' => now()->subDays(3)->toDateString(),
-                'tanggal_pengembalian' => now()->subDays(2)->toDateString(),
+                'nama_peminjam' => 'Dewi Lestari',
+                'nis' => '1002',
+                'tanggal_pinjam' => now()->subDays(10)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->subDays(3)->format('Y-m-d'),
+                'tanggal_pengembalian' => now()->subDays(2)->format('Y-m-d'),
                 'status' => 'dikembalikan',
             ],
             [
                 'buku_id' => 3,
-                'nama_peminjam' => 'Doni Kusuma',
-                'nis' => '2026003',
-                'tanggal_pinjam' => now()->subDays(12)->toDateString(),
-                'tanggal_kembali_rencana' => now()->subDays(5)->toDateString(),
-                'tanggal_pengembalian' => null,
-                'status' => 'dipinjam', // akan terdeteksi sebagai terlambat
+                'nama_peminjam' => 'Fajar Nugraha',
+                'nis' => '1003',
+                'tanggal_pinjam' => now()->subDays(12)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->subDays(5)->format('Y-m-d'),
+                'status' => 'terlambat',
             ],
             [
                 'buku_id' => 4,
-                'nama_peminjam' => 'Rina Wijaya',
-                'nis' => '2026004',
-                'tanggal_pinjam' => now()->subDays(1)->toDateString(),
-                'tanggal_kembali_rencana' => now()->addDays(6)->toDateString(),
-                'tanggal_pengembalian' => null,
+                'nama_peminjam' => 'Siti Nurhaliza',
+                'nis' => '1004',
+                'tanggal_pinjam' => now()->subDays(2)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->addDays(5)->format('Y-m-d'),
                 'status' => 'dipinjam',
             ],
             [
                 'buku_id' => 5,
-                'nama_peminjam' => 'Andi Pratama',
-                'nis' => '2026005',
-                'tanggal_pinjam' => now()->subDays(15)->toDateString(),
-                'tanggal_kembali_rencana' => now()->subDays(8)->toDateString(),
-                'tanggal_pengembalian' => now()->subDays(7)->toDateString(),
+                'nama_peminjam' => 'Rahmat Hidayat',
+                'nis' => '1005',
+                'tanggal_pinjam' => now()->subDays(15)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->subDays(8)->format('Y-m-d'),
+                'tanggal_pengembalian' => now()->subDays(7)->format('Y-m-d'),
                 'status' => 'dikembalikan',
             ],
             [
                 'buku_id' => 6,
-                'nama_peminjam' => 'Eko Prasetyo',
-                'nis' => '2026006',
-                'tanggal_pinjam' => now()->subDays(14)->toDateString(),
-                'tanggal_kembali_rencana' => now()->subDays(7)->toDateString(),
-                'tanggal_pengembalian' => null,
-                'status' => 'dipinjam', // akan terdeteksi sebagai terlambat
+                'nama_peminjam' => 'Maya Indah',
+                'nis' => '1006',
+                'tanggal_pinjam' => now()->subDays(14)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->subDays(7)->format('Y-m-d'),
+                'status' => 'terlambat',
             ],
             [
                 'buku_id' => 7,
-                'nama_peminjam' => 'Maya Putri',
-                'nis' => '2026007',
-                'tanggal_pinjam' => now()->subDays(2)->toDateString(),
-                'tanggal_kembali_rencana' => now()->addDays(5)->toDateString(),
-                'tanggal_pengembalian' => null,
+                'nama_peminjam' => 'Bayu Pratama',
+                'nis' => '1007',
+                'tanggal_pinjam' => now()->subDays(1)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->addDays(6)->format('Y-m-d'),
                 'status' => 'dipinjam',
             ],
             [
                 'buku_id' => 8,
-                'nama_peminjam' => 'Fajar Hidayat',
-                'nis' => '2026008',
-                'tanggal_pinjam' => now()->subDays(20)->toDateString(),
-                'tanggal_kembali_rencana' => now()->subDays(13)->toDateString(),
-                'tanggal_pengembalian' => now()->subDays(12)->toDateString(),
-                'status' => 'dikembalikan',
+                'nama_peminjam' => 'Rina Gunawan',
+                'nis' => '1008',
+                'tanggal_pinjam' => now()->subDays(8)->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->subDays(1)->format('Y-m-d'),
+                'status' => 'terlambat',
             ],
         ];
 
-        foreach ($sampleLoans as $loan) {
-            Peminjaman::create($loan);
+        foreach ($peminjamanSamples as $pm) {
+            Peminjaman::create($pm);
         }
     }
 }

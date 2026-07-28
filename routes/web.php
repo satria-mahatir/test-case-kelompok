@@ -18,4 +18,5 @@ Route::view('/bukus', 'bukus.index')->name('bukus.index');
 Route::view('/kategoris', 'kategoris.index')->name('kategoris.index');
 Route::view('/penulis', 'penulis.index')->name('penulis.index');
 Route::view('/penerbits', 'penerbits.index')->name('penerbits.index');
+Route::view('/users', 'users.index')->name('users.index');
 Route::view('/peminjaman', 'peminjaman.index')->name('peminjaman.index');

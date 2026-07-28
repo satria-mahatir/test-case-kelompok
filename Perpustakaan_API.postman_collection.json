@@ -1,689 +1,1053 @@
 {
-	"info": {
-		"_postman_id": "perpustakaan-api-2026",
-		"name": "Perpustakaan API - Sistem Peminjaman Buku",
-		"description": "REST API untuk Sistem Peminjaman Buku Perpustakaan.\n\nFitur:\n- Master Data: Kategori, Penulis, Penerbit, Buku\n- Transaksi: Peminjaman & Pengembalian Buku\n- Pagination, Searching, Validasi Input\n\nBase URL: http://localhost:8000/api/v1",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:8000/api/v1",
-			"type": "string"
-		}
-	],
-	"item": [
-		{
-			"name": "Master Kategori",
-			"description": "CRUD untuk master data kategori buku (Fiksi, Non-Fiksi, Sains, dll).",
-			"item": [
-				{
-					"name": "List Semua Kategori",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/kategoris?search=&per_page=10&page=1",
-							"host": ["{{base_url}}"],
-							"path": ["kategoris"],
-							"query": [
-								{
-									"key": "search",
-									"value": "",
-									"description": "Cari berdasarkan nama kategori"
-								},
-								{
-									"key": "per_page",
-									"value": "10",
-									"description": "Jumlah data per halaman (default: 10)"
-								},
-								{
-									"key": "page",
-									"value": "1",
-									"description": "Nomor halaman"
-								}
-							]
-						},
-						"description": "Mengambil daftar semua kategori buku dengan fitur pagination dan searching."
-					},
-					"response": []
-				},
-				{
-					"name": "Tambah Kategori Baru",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nama_kategori\": \"Fiksi Ilmiah\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/kategoris",
-							"host": ["{{base_url}}"],
-							"path": ["kategoris"]
-						},
-						"description": "Menambahkan kategori buku baru.\n\nField wajib:\n- nama_kategori (string, max:100, unique)"
-					},
-					"response": []
-				},
-				{
-					"name": "Detail Kategori",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/kategoris/1",
-							"host": ["{{base_url}}"],
-							"path": ["kategoris", "1"]
-						},
-						"description": "Mengambil detail satu kategori berdasarkan ID."
-					},
-					"response": []
-				},
-				{
-					"name": "Update Kategori",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nama_kategori\": \"Fiksi Fantasy\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/kategoris/1",
-							"host": ["{{base_url}}"],
-							"path": ["kategoris", "1"]
-						},
-						"description": "Mengupdate data kategori berdasarkan ID.\n\nField:\n- nama_kategori (string, max:100, unique)"
-					},
-					"response": []
-				},
-				{
-					"name": "Hapus Kategori",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/kategoris/1",
-							"host": ["{{base_url}}"],
-							"path": ["kategoris", "1"]
-						},
-						"description": "Menghapus kategori berdasarkan ID.\n\n⚠️ PERHATIAN: Semua buku yang terkait kategori ini akan ikut terhapus (cascade delete)."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Master Penulis",
-			"description": "CRUD untuk master data penulis buku.",
-			"item": [
-				{
-					"name": "List Semua Penulis",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/penulis?search=&per_page=10&page=1",
-							"host": ["{{base_url}}"],
-							"path": ["penulis"],
-							"query": [
-								{
-									"key": "search",
-									"value": "",
-									"description": "Cari berdasarkan nama penulis"
-								},
-								{
-									"key": "per_page",
-									"value": "10",
-									"description": "Jumlah data per halaman (default: 10)"
-								},
-								{
-									"key": "page",
-									"value": "1",
-									"description": "Nomor halaman"
-								}
-							]
-						},
-						"description": "Mengambil daftar semua penulis dengan fitur pagination dan searching."
-					},
-					"response": []
-				},
-				{
-					"name": "Tambah Penulis Baru",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nama_penulis\": \"Pramoedya Ananta Toer\",\n    \"email\": \"pramoedya@example.com\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/penulis",
-							"host": ["{{base_url}}"],
-							"path": ["penulis"]
-						},
-						"description": "Menambahkan penulis baru.\n\nField wajib:\n- nama_penulis (string, max:150)\n\nField opsional:\n- email (email, max:150)"
-					},
-					"response": []
-				},
-				{
-					"name": "Detail Penulis",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/penulis/1",
-							"host": ["{{base_url}}"],
-							"path": ["penulis", "1"]
-						},
-						"description": "Mengambil detail satu penulis berdasarkan ID."
-					},
-					"response": []
-				},
-				{
-					"name": "Update Penulis",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nama_penulis\": \"Tere Liye\",\n    \"email\": \"tereliye@example.com\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/penulis/1",
-							"host": ["{{base_url}}"],
-							"path": ["penulis", "1"]
-						},
-						"description": "Mengupdate data penulis berdasarkan ID.\n\nField:\n- nama_penulis (string, max:150)\n- email (email, max:150, opsional)"
-					},
-					"response": []
-				},
-				{
-					"name": "Hapus Penulis",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/penulis/1",
-							"host": ["{{base_url}}"],
-							"path": ["penulis", "1"]
-						},
-						"description": "Menghapus penulis berdasarkan ID.\n\n⚠️ PERHATIAN: Semua buku yang terkait penulis ini akan ikut terhapus (cascade delete)."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Master Penerbit",
-			"description": "CRUD untuk master data penerbit buku.",
-			"item": [
-				{
-					"name": "List Semua Penerbit",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/penerbits?search=&per_page=10&page=1",
-							"host": ["{{base_url}}"],
-							"path": ["penerbits"],
-							"query": [
-								{
-									"key": "search",
-									"value": "",
-									"description": "Cari berdasarkan nama penerbit"
-								},
-								{
-									"key": "per_page",
-									"value": "10",
-									"description": "Jumlah data per halaman (default: 10)"
-								},
-								{
-									"key": "page",
-									"value": "1",
-									"description": "Nomor halaman"
-								}
-							]
-						},
-						"description": "Mengambil daftar semua penerbit dengan fitur pagination dan searching."
-					},
-					"response": []
-				},
-				{
-					"name": "Tambah Penerbit Baru",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nama_penerbit\": \"Gramedia Pustaka Utama\",\n    \"kota\": \"Jakarta\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/penerbits",
-							"host": ["{{base_url}}"],
-							"path": ["penerbits"]
-						},
-						"description": "Menambahkan penerbit baru.\n\nField wajib:\n- nama_penerbit (string, max:150)\n\nField opsional:\n- kota (string, max:100)"
-					},
-					"response": []
-				},
-				{
-					"name": "Detail Penerbit",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/penerbits/1",
-							"host": ["{{base_url}}"],
-							"path": ["penerbits", "1"]
-						},
-						"description": "Mengambil detail satu penerbit berdasarkan ID."
-					},
-					"response": []
-				},
-				{
-					"name": "Update Penerbit",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nama_penerbit\": \"Penerbit Erlangga\",\n    \"kota\": \"Surabaya\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/penerbits/1",
-							"host": ["{{base_url}}"],
-							"path": ["penerbits", "1"]
-						},
-						"description": "Mengupdate data penerbit berdasarkan ID.\n\nField:\n- nama_penerbit (string, max:150)\n- kota (string, max:100, opsional)"
-					},
-					"response": []
-				},
-				{
-					"name": "Hapus Penerbit",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/penerbits/1",
-							"host": ["{{base_url}}"],
-							"path": ["penerbits", "1"]
-						},
-						"description": "Menghapus penerbit berdasarkan ID.\n\n⚠️ PERHATIAN: Semua buku yang terkait penerbit ini akan ikut terhapus (cascade delete)."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Master Buku",
-			"description": "CRUD untuk master data buku perpustakaan. Setiap buku terhubung ke kategori, penulis, dan penerbit.",
-			"item": [
-				{
-					"name": "List Semua Buku",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/bukus?search=&kategori_id=&per_page=10&page=1",
-							"host": ["{{base_url}}"],
-							"path": ["bukus"],
-							"query": [
-								{
-									"key": "search",
-									"value": "",
-									"description": "Cari berdasarkan judul, ISBN, atau nama penulis"
-								},
-								{
-									"key": "kategori_id",
-									"value": "",
-									"description": "Filter berdasarkan ID kategori"
-								},
-								{
-									"key": "per_page",
-									"value": "10",
-									"description": "Jumlah data per halaman (default: 10)"
-								},
-								{
-									"key": "page",
-									"value": "1",
-									"description": "Nomor halaman"
-								}
-							]
-						},
-						"description": "Mengambil daftar semua buku dengan fitur pagination, searching (judul/ISBN/penulis), dan filter kategori.\n\nResponse menyertakan data relasi: kategori, penulis, penerbit."
-					},
-					"response": []
-				},
-				{
-					"name": "Tambah Buku Baru",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"judul\": \"Laskar Pelangi\",\n    \"kategori_id\": 1,\n    \"penulis_id\": 3,\n    \"penerbit_id\": 1,\n    \"isbn\": \"978-001\",\n    \"tahun_terbit\": 2005,\n    \"stok\": 5,\n    \"deskripsi\": \"Novel karya Andrea Hirata yang menceritakan kisah inspiratif anak-anak Belitung.\",\n    \"cover\": null\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/bukus",
-							"host": ["{{base_url}}"],
-							"path": ["bukus"]
-						},
-						"description": "Menambahkan buku baru ke perpustakaan.\n\nField wajib:\n- judul (string, max:200)\n- kategori_id (integer, harus ada di tabel kategoris)\n- penulis_id (integer, harus ada di tabel penulis)\n- penerbit_id (integer, harus ada di tabel penerbits)\n- stok (integer, min:0)\n\nField opsional:\n- isbn (string, max:20, unique)\n- tahun_terbit (4 digit, 1900 s/d tahun depan)\n- deskripsi (text)\n- cover (string, path file cover)"
-					},
-					"response": []
-				},
-				{
-					"name": "Detail Buku",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/bukus/1",
-							"host": ["{{base_url}}"],
-							"path": ["bukus", "1"]
-						},
-						"description": "Mengambil detail satu buku berdasarkan ID, termasuk data relasi kategori, penulis, dan penerbit."
-					},
-					"response": []
-				},
-				{
-					"name": "Update Buku",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"judul\": \"Laskar Pelangi (Edisi Revisi)\",\n    \"stok\": 10\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/bukus/1",
-							"host": ["{{base_url}}"],
-							"path": ["bukus", "1"]
-						},
-						"description": "Mengupdate data buku berdasarkan ID.\n\nSemua field bersifat opsional saat update (menggunakan 'sometimes' validation). Hanya kirim field yang ingin diubah."
-					},
-					"response": []
-				},
-				{
-					"name": "Hapus Buku",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/bukus/1",
-							"host": ["{{base_url}}"],
-							"path": ["bukus", "1"]
-						},
-						"description": "Menghapus buku berdasarkan ID.\n\n⚠️ PERHATIAN: Semua riwayat peminjaman buku ini akan ikut terhapus (cascade delete)."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Transaksi Peminjaman & Pengembalian",
-			"description": "Endpoint untuk mencatat transaksi peminjaman buku dan pengembalian buku.",
-			"item": [
-				{
-					"name": "List Semua Peminjaman",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/peminjaman?search=&status=&per_page=10&page=1",
-							"host": ["{{base_url}}"],
-							"path": ["peminjaman"],
-							"query": [
-								{
-									"key": "search",
-									"value": "",
-									"description": "Cari berdasarkan nama peminjam atau NIS"
-								},
-								{
-									"key": "status",
-									"value": "",
-									"description": "Filter status: dipinjam, dikembalikan, atau terlambat"
-								},
-								{
-									"key": "per_page",
-									"value": "10",
-									"description": "Jumlah data per halaman (default: 10)"
-								},
-								{
-									"key": "page",
-									"value": "1",
-									"description": "Nomor halaman"
-								}
-							]
-						},
-						"description": "Mengambil daftar semua transaksi peminjaman dengan fitur pagination, searching, dan filter status.\n\nFilter status yang tersedia:\n- dipinjam\n- dikembalikan\n- terlambat"
-					},
-					"response": []
-				},
-				{
-					"name": "Catat Peminjaman Baru",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"buku_id\": 1,\n    \"nama_peminjam\": \"Ahmad Fauzi\",\n    \"nis\": \"2024001\",\n    \"tanggal_pinjam\": \"2026-07-20\",\n    \"tanggal_kembali_rencana\": \"2026-07-27\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/peminjaman",
-							"host": ["{{base_url}}"],
-							"path": ["peminjaman"]
-						},
-						"description": "Mencatat transaksi peminjaman buku baru.\n\nProses otomatis:\n- Mengecek ketersediaan stok buku\n- Mengurangi stok buku sebanyak 1\n- Menggunakan database transaction untuk keamanan data\n\nField wajib:\n- buku_id (integer, harus ada di tabel bukus)\n- nama_peminjam (string, max:150)\n- nis (string, max:30)\n- tanggal_pinjam (date, format: YYYY-MM-DD)\n- tanggal_kembali_rencana (date, harus >= tanggal_pinjam)\n\nResponse 422 jika stok buku habis."
-					},
-					"response": []
-				},
-				{
-					"name": "Detail Peminjaman",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/peminjaman/1",
-							"host": ["{{base_url}}"],
-							"path": ["peminjaman", "1"]
-						},
-						"description": "Mengambil detail satu transaksi peminjaman berdasarkan ID, termasuk data buku yang dipinjam."
-					},
-					"response": []
-				},
-				{
-					"name": "Pengembalian Buku",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/peminjaman/1/kembalikan",
-							"host": ["{{base_url}}"],
-							"path": ["peminjaman", "1", "kembalikan"]
-						},
-						"description": "Mencatat pengembalian buku.\n\nProses otomatis:\n- Mengubah status menjadi 'dikembalikan'\n- Mengisi tanggal_pengembalian dengan tanggal hari ini\n- Menambah stok buku sebanyak 1\n- Menggunakan database transaction untuk keamanan data\n\nResponse 422 jika buku sudah dikembalikan sebelumnya."
-					},
-					"response": []
-				},
-				{
-					"name": "Hapus Data Peminjaman",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/peminjaman/1",
-							"host": ["{{base_url}}"],
-							"path": ["peminjaman", "1"]
-						},
-						"description": "Menghapus data transaksi peminjaman berdasarkan ID."
-					},
-					"response": []
-				}
-			]
-		}
-	]
+    "info": {
+        "_postman_id": "perpustakaan-api-2026",
+        "name": "Perpustakaan API - Sistem Peminjaman Buku",
+        "description": "REST API untuk Sistem Peminjaman Buku Perpustakaan.\n\nFitur:\n- Autentikasi: Login Username & Password (Tanpa Gmail), Logout, Me\n- Master Data: Kategori, Penulis, Penerbit, Buku, Akun User\n- Transaksi: Peminjaman & Pengembalian Buku\n- Pagination, Searching, Validasi Input\n\nBase URL: http://localhost:8000/api/v1",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Autentikasi User (Tanpa Gmail)",
+            "description": "Endpoint autentikasi login dan logout menggunakan username & password (tanpa butuh gmail).",
+            "item": [
+                {
+                    "name": "Login User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "login"
+                            ]
+                        },
+                        "description": "Login akun pengguna menggunakan username & password.\n\nAkun default bawaan seeder:\n- Admin: username = admin, password = password123\n- Petugas: username = petugas1, password = password123"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Profil Akun Login (Me)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "me"
+                            ]
+                        },
+                        "description": "Mengambil detail profil akun yang sedang login."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout akun dan menghapus token autentikasi."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Master Kategori",
+            "description": "CRUD untuk master data kategori buku (Fiksi, Non-Fiksi, Sains, dll).",
+            "item": [
+                {
+                    "name": "List Semua Kategori",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/kategoris?search=&per_page=10&page=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "kategoris"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Cari berdasarkan nama kategori"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Jumlah data per halaman (default: 10)"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Nomor halaman"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil daftar semua kategori buku dengan fitur pagination dan searching."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tambah Kategori Baru",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nama_kategori\": \"Fiksi Ilmiah\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/kategoris",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "kategoris"
+                            ]
+                        },
+                        "description": "Menambahkan kategori buku baru.\n\nField wajib:\n- nama_kategori (string, max:100, unique)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Detail Kategori",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/kategoris/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "kategoris",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengambil detail satu kategori berdasarkan ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Kategori",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nama_kategori\": \"Fiksi Fantasy\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/kategoris/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "kategoris",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengupdate data kategori berdasarkan ID.\n\nField:\n- nama_kategori (string, max:100, unique)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hapus Kategori",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/kategoris/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "kategoris",
+                                "1"
+                            ]
+                        },
+                        "description": "Menghapus kategori berdasarkan ID.\n\n⚠️ PERHATIAN: Semua buku yang terkait kategori ini akan ikut terhapus (cascade delete)."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Master Penulis",
+            "description": "CRUD untuk master data penulis buku.",
+            "item": [
+                {
+                    "name": "List Semua Penulis",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/penulis?search=&per_page=10&page=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penulis"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Cari berdasarkan nama penulis"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Jumlah data per halaman (default: 10)"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Nomor halaman"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil daftar semua penulis dengan fitur pagination dan searching."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tambah Penulis Baru",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nama_penulis\": \"Pramoedya Ananta Toer\",\n    \"email\": \"pramoedya@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/penulis",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penulis"
+                            ]
+                        },
+                        "description": "Menambahkan penulis baru.\n\nField wajib:\n- nama_penulis (string, max:150)\n\nField opsional:\n- email (email, max:150)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Detail Penulis",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/penulis/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penulis",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengambil detail satu penulis berdasarkan ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Penulis",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nama_penulis\": \"Tere Liye\",\n    \"email\": \"tereliye@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/penulis/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penulis",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengupdate data penulis berdasarkan ID.\n\nField:\n- nama_penulis (string, max:150)\n- email (email, max:150, opsional)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hapus Penulis",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/penulis/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penulis",
+                                "1"
+                            ]
+                        },
+                        "description": "Menghapus penulis berdasarkan ID.\n\n⚠️ PERHATIAN: Semua buku yang terkait penulis ini akan ikut terhapus (cascade delete)."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Master Penerbit",
+            "description": "CRUD untuk master data penerbit buku.",
+            "item": [
+                {
+                    "name": "List Semua Penerbit",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/penerbits?search=&per_page=10&page=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penerbits"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Cari berdasarkan nama penerbit"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Jumlah data per halaman (default: 10)"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Nomor halaman"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil daftar semua penerbit dengan fitur pagination dan searching."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tambah Penerbit Baru",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nama_penerbit\": \"Gramedia Pustaka Utama\",\n    \"kota\": \"Jakarta\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/penerbits",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penerbits"
+                            ]
+                        },
+                        "description": "Menambahkan penerbit baru.\n\nField wajib:\n- nama_penerbit (string, max:150)\n\nField opsional:\n- kota (string, max:100)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Detail Penerbit",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/penerbits/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penerbits",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengambil detail satu penerbit berdasarkan ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Penerbit",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nama_penerbit\": \"Penerbit Erlangga\",\n    \"kota\": \"Surabaya\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/penerbits/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penerbits",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengupdate data penerbit berdasarkan ID.\n\nField:\n- nama_penerbit (string, max:150)\n- kota (string, max:100, opsional)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hapus Penerbit",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/penerbits/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "penerbits",
+                                "1"
+                            ]
+                        },
+                        "description": "Menghapus penerbit berdasarkan ID.\n\n⚠️ PERHATIAN: Semua buku yang terkait penerbit ini akan ikut terhapus (cascade delete)."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Master Buku",
+            "description": "CRUD untuk master data buku perpustakaan. Setiap buku terhubung ke kategori, penulis, dan penerbit.",
+            "item": [
+                {
+                    "name": "List Semua Buku",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/bukus?search=&kategori_id=&per_page=10&page=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "bukus"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Cari berdasarkan judul, ISBN, atau nama penulis"
+                                },
+                                {
+                                    "key": "kategori_id",
+                                    "value": "",
+                                    "description": "Filter berdasarkan ID kategori"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Jumlah data per halaman (default: 10)"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Nomor halaman"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil daftar semua buku dengan fitur pagination, searching (judul/ISBN/penulis), dan filter kategori.\n\nResponse menyertakan data relasi: kategori, penulis, penerbit."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tambah Buku Baru",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"judul\": \"Laskar Pelangi\",\n    \"kategori_id\": 1,\n    \"penulis_id\": 3,\n    \"penerbit_id\": 1,\n    \"isbn\": \"978-001\",\n    \"tahun_terbit\": 2005,\n    \"stok\": 5,\n    \"deskripsi\": \"Novel karya Andrea Hirata yang menceritakan kisah inspiratif anak-anak Belitung.\",\n    \"cover\": null\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/bukus",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "bukus"
+                            ]
+                        },
+                        "description": "Menambahkan buku baru ke perpustakaan.\n\nField wajib:\n- judul (string, max:200)\n- kategori_id (integer, harus ada di tabel kategoris)\n- penulis_id (integer, harus ada di tabel penulis)\n- penerbit_id (integer, harus ada di tabel penerbits)\n- stok (integer, min:0)\n\nField opsional:\n- isbn (string, max:20, unique)\n- tahun_terbit (4 digit, 1900 s/d tahun depan)\n- deskripsi (text)\n- cover (string, path file cover)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Detail Buku",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/bukus/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "bukus",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengambil detail satu buku berdasarkan ID, termasuk data relasi kategori, penulis, dan penerbit."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Buku",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"judul\": \"Laskar Pelangi (Edisi Revisi)\",\n    \"stok\": 10\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/bukus/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "bukus",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengupdate data buku berdasarkan ID.\n\nSemua field bersifat opsional saat update (menggunakan 'sometimes' validation). Hanya kirim field yang ingin diubah."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hapus Buku",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/bukus/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "bukus",
+                                "1"
+                            ]
+                        },
+                        "description": "Menghapus buku berdasarkan ID.\n\n⚠️ PERHATIAN: Semua riwayat peminjaman buku ini akan ikut terhapus (cascade delete)."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Manajemen Akun User (CRUD)",
+            "description": "CRUD untuk data akun pengguna / petugas perpustakaan.",
+            "item": [
+                {
+                    "name": "List Semua Akun User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users?search=&per_page=10&page=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Cari berdasarkan nama atau username"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Jumlah data per halaman"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Nomor halaman"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil daftar semua akun pengguna dengan pagination & pencarian."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Tambah Akun User Baru",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Rian Hidayat\",\n    \"username\": \"petugas3\",\n    \"password\": \"password123\",\n    \"role\": \"petugas\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        },
+                        "description": "Menambahkan akun pengguna baru tanpa butuh gmail.\n\nField:\n- name (required, string)\n- username (required, string, unique)\n- password (required, string, min:6)\n- role (optional, in: admin, petugas)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Detail Akun User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengambil detail satu akun pengguna berdasarkan ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Akun User",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Satria Mahatir (Super Admin)\",\n    \"username\": \"admin\",\n    \"password\": \"newpassword123\",\n    \"role\": \"admin\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/users/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                "1"
+                            ]
+                        },
+                        "description": "Memperbarui data akun pengguna.\n\nCatatan:\n- Password opsional (kosongkan jika tidak ingin mengubah password)."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hapus Akun User",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users",
+                                "1"
+                            ]
+                        },
+                        "description": "Menghapus akun pengguna dari database."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Transaksi Peminjaman & Pengembalian",
+            "description": "Endpoint untuk mencatat transaksi peminjaman buku dan pengembalian buku.",
+            "item": [
+                {
+                    "name": "List Semua Peminjaman",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/peminjaman?search=&status=&per_page=10&page=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "peminjaman"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Cari berdasarkan nama peminjam atau NIS"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "",
+                                    "description": "Filter status: dipinjam, dikembalikan, atau terlambat"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Jumlah data per halaman (default: 10)"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Nomor halaman"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil daftar semua transaksi peminjaman dengan fitur pagination, searching, dan filter status.\n\nFilter status yang tersedia:\n- dipinjam\n- dikembalikan\n- terlambat"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Catat Peminjaman Baru",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"buku_id\": 1,\n    \"nama_peminjam\": \"Ahmad Fauzi\",\n    \"nis\": \"2024001\",\n    \"tanggal_pinjam\": \"2026-07-20\",\n    \"tanggal_kembali_rencana\": \"2026-07-27\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/peminjaman",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "peminjaman"
+                            ]
+                        },
+                        "description": "Mencatat transaksi peminjaman buku baru.\n\nProses otomatis:\n- Mengecek ketersediaan stok buku\n- Mengurangi stok buku sebanyak 1\n- Menggunakan database transaction untuk keamanan data\n\nField wajib:\n- buku_id (integer, harus ada di tabel bukus)\n- nama_peminjam (string, max:150)\n- nis (string, max:30)\n- tanggal_pinjam (date, format: YYYY-MM-DD)\n- tanggal_kembali_rencana (date, harus >= tanggal_pinjam)\n\nResponse 422 jika stok buku habis."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Detail Peminjaman",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/peminjaman/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "peminjaman",
+                                "1"
+                            ]
+                        },
+                        "description": "Mengambil detail satu transaksi peminjaman berdasarkan ID, termasuk data buku yang dipinjam."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Pengembalian Buku",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/peminjaman/1/kembalikan",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "peminjaman",
+                                "1",
+                                "kembalikan"
+                            ]
+                        },
+                        "description": "Mencatat pengembalian buku.\n\nProses otomatis:\n- Mengubah status menjadi 'dikembalikan'\n- Mengisi tanggal_pengembalian dengan tanggal hari ini\n- Menambah stok buku sebanyak 1\n- Menggunakan database transaction untuk keamanan data\n\nResponse 422 jika buku sudah dikembalikan sebelumnya."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Hapus Data Peminjaman",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/peminjaman/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "peminjaman",
+                                "1"
+                            ]
+                        },
+                        "description": "Menghapus data transaksi peminjaman berdasarkan ID."
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
 }

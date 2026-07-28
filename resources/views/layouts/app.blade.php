@@ -64,6 +64,11 @@
                     <i class="bi bi-building"></i> Penerbit
                 </a>
             </div>
+            <div class="nav-item">
+                <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-gear"></i> Kelola Akun
+                </a>
+            </div>
 
             <div class="nav-label" style="margin-top: 10px;">Transaksi</div>
             <div class="nav-item">

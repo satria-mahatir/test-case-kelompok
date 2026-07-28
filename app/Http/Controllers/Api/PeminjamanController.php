@@ -160,11 +160,18 @@ class PeminjamanController extends Controller
 
     public function destroy(Peminjaman $peminjaman): JsonResponse
     {
-        $peminjaman->delete();
+        return DB::transaction(function () use ($peminjaman) {
+            // Jika transaksi dihapus saat masih dipinjam/terlambat, kembalikan stok buku
+            if ($peminjaman->status !== 'dikembalikan' && $peminjaman->buku) {
+                $peminjaman->buku()->increment('stok');
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data peminjaman berhasil dihapus',
-        ]);
+            $peminjaman->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data peminjaman berhasil dihapus',
+            ]);
+        });
     }
 }

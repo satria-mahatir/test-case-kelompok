@@ -24,16 +24,22 @@ class PerpustakaanSeeder extends Seeder
                 'role' => 'admin',
             ],
             [
-                'name' => 'Budi Santoso (Petugas 1)',
+                'name' => 'Budi Santoso (Petugas Web)',
                 'username' => 'petugas1',
                 'password' => Hash::make('password123'),
                 'role' => 'petugas',
             ],
             [
-                'name' => 'Siti Rahmawati (Petugas 2)',
-                'username' => 'petugas2',
+                'name' => 'Ahmad Rizky (Peminjam Mobile)',
+                'username' => 'peminjam1',
                 'password' => Hash::make('password123'),
-                'role' => 'petugas',
+                'role' => 'peminjam',
+            ],
+            [
+                'name' => 'Dewi Lestari (Peminjam Mobile)',
+                'username' => 'peminjam2',
+                'password' => Hash::make('password123'),
+                'role' => 'peminjam',
             ],
         ];
 

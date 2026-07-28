@@ -67,7 +67,7 @@
 
                     <div class="mb-3">
                         <label class="form-label text-secondary small fw-medium mb-1">Username (Untuk Login - Tanpa Gmail) <span class="text-danger">*</span></label>
-                        <input type="text" id="username" class="form-control form-control-custom" placeholder="Contoh: admin, petugas1" required>
+                        <input type="text" id="username" class="form-control form-control-custom" placeholder="Contoh: peminjam1, petugas1, admin" required>
                     </div>
 
                     <div class="mb-3">
@@ -79,8 +79,9 @@
                     <div class="mb-3">
                         <label class="form-label text-secondary small fw-medium mb-1">Role / Level Akses</label>
                         <select id="role" class="form-select form-control-custom">
-                            <option value="petugas">Petugas Perpustakaan</option>
-                            <option value="admin">Administrator</option>
+                            <option value="peminjam">Peminjam (Anggota App Mobile)</option>
+                            <option value="petugas">Petugas Perpustakaan (Web)</option>
+                            <option value="admin">Administrator (Web & System)</option>
                         </select>
                     </div>
                 </div>
@@ -126,9 +127,15 @@
                 let html = '';
                 response.data.forEach((item, index) => {
                     const rowNum = ((response.pagination.current_page - 1) * response.pagination.per_page) + index + 1;
-                    const roleBadge = item.role === 'admin' 
-                        ? `<span class="badge bg-danger bg-opacity-20 text-danger border border-danger border-opacity-30 px-2 py-1" style="font-size:0.72rem;">Admin</span>` 
-                        : `<span class="badge bg-info bg-opacity-20 text-info border border-info border-opacity-30 px-2 py-1" style="font-size:0.72rem;">Petugas</span>`;
+                    
+                    let roleBadge = '';
+                    if (item.role === 'admin') {
+                        roleBadge = `<span class="badge bg-danger bg-opacity-20 text-danger border border-danger border-opacity-30 px-2 py-1" style="font-size:0.72rem;">Admin</span>`;
+                    } else if (item.role === 'petugas') {
+                        roleBadge = `<span class="badge bg-info bg-opacity-20 text-info border border-info border-opacity-30 px-2 py-1" style="font-size:0.72rem;">Petugas</span>`;
+                    } else {
+                        roleBadge = `<span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 px-2 py-1" style="font-size:0.72rem;">Peminjam</span>`;
+                    }
                     
                     html += `
                         <tr>
@@ -166,6 +173,7 @@
         document.getElementById('userForm').reset();
         document.getElementById('userId').value = '';
         document.getElementById('userModalTitle').innerText = 'Tambah Akun Pengguna';
+        document.getElementById('role').value = 'peminjam';
         document.getElementById('passwordHelp').innerText = '*';
         document.getElementById('passwordNote').style.display = 'none';
         document.getElementById('password').required = true;
@@ -184,7 +192,7 @@
                 document.getElementById('passwordHelp').innerText = '';
                 document.getElementById('passwordNote').style.display = 'block';
                 document.getElementById('password').required = false;
-                document.getElementById('role').value = user.role || 'petugas';
+                document.getElementById('role').value = user.role || 'peminjam';
 
                 document.getElementById('userModalTitle').innerText = 'Edit Akun Pengguna';
                 userModalInstance.show();

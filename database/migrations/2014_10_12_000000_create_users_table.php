@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('petugas'); // 'admin' atau 'petugas'
+            $table->string('role')->default('peminjam'); // 'admin', 'petugas', atau 'peminjam'
             $table->rememberToken();
             $table->timestamps();
         });

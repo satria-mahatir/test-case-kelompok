@@ -53,20 +53,21 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:100|unique:users,username',
             'password' => 'required|string|min:6',
-            'role' => 'nullable|string|in:admin,petugas',
+            'role' => 'nullable|string|in:admin,petugas,peminjam',
         ], [
             'name.required' => 'Nama lengkap wajib diisi',
             'username.required' => 'Username wajib diisi',
             'username.unique' => 'Username sudah digunakan, gunakan username lain',
             'password.required' => 'Password wajib diisi',
             'password.min' => 'Password minimal 6 karakter',
+            'role.in' => 'Role harus salah satu dari: admin, petugas, peminjam',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'username' => strtolower(trim($validated['username'])),
             'password' => Hash::make($validated['password']),
-            'role' => $validated['role'] ?? 'petugas',
+            'role' => $validated['role'] ?? 'peminjam',
         ]);
 
         return response()->json([
@@ -102,12 +103,13 @@ class UserController extends Controller
                 Rule::unique('users', 'username')->ignore($user->id),
             ],
             'password' => 'nullable|string|min:6',
-            'role' => 'nullable|string|in:admin,petugas',
+            'role' => 'nullable|string|in:admin,petugas,peminjam',
         ], [
             'name.required' => 'Nama lengkap wajib diisi',
             'username.required' => 'Username wajib diisi',
             'username.unique' => 'Username sudah digunakan oleh akun lain',
             'password.min' => 'Password minimal 6 karakter',
+            'role.in' => 'Role harus salah satu dari: admin, petugas, peminjam',
         ]);
 
         $userData = [

@@ -797,7 +797,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Rian Hidayat\",\n    \"username\": \"petugas3\",\n    \"password\": \"password123\",\n    \"role\": \"petugas\"\n}"
+                            "raw": "{\n    \"name\": \"Ahmad Rizky\",\n    \"username\": \"peminjam1\",\n    \"password\": \"password123\",\n    \"role\": \"peminjam\"\n}"
                         },
                         "url": {
                             "raw": "{{base_url}}/users",
@@ -808,7 +808,7 @@
                                 "users"
                             ]
                         },
-                        "description": "Menambahkan akun pengguna baru tanpa butuh gmail.\n\nField:\n- name (required, string)\n- username (required, string, unique)\n- password (required, string, min:6)\n- role (optional, in: admin, petugas)"
+                        "description": "Menambahkan akun pengguna baru (Peminjam / Petugas / Admin) tanpa butuh gmail.\n\nField:\n- name (required, string)\n- username (required, string, unique)\n- password (required, string, min:6)\n- role (optional, in: admin, petugas, peminjam — default: peminjam)"
                     },
                     "response": []
                 },
@@ -852,7 +852,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Satria Mahatir (Super Admin)\",\n    \"username\": \"admin\",\n    \"password\": \"newpassword123\",\n    \"role\": \"admin\"\n}"
+                            "raw": "{\n    \"name\": \"Ahmad Rizky (Siswa)\",\n    \"username\": \"peminjam1\",\n    \"role\": \"peminjam\"\n}"
                         },
                         "url": {
                             "raw": "{{base_url}}/users/1",
